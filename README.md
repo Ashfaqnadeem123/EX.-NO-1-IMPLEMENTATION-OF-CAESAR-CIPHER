@@ -16,68 +16,56 @@ STEP-4: Else subtract the key from the plain text.
 STEP-5: Display the cipher text obtained above.
 
 ## PROGRAM:
-
 ```
 #include <stdio.h>
+#include <ctype.h>
 #include <string.h>
 
-char* encrypt(char text[], int s) {
-    static char result[100];
+void encode(char *str, int offset, char *result) {
     int i;
+    int length = strlen(str);
+    offset = offset % 26 + 26;
     
-    for (i = 0; i < strlen(text); i++) {
-        char char_ = text[i];
-        
-        if (char_ >= 'A' && char_ <= 'Z') {
-            result[i] = (char)(((int)char_ + s - 65) % 26 + 65);
-        } else if (char_ >= 'a' && char_ <= 'z') {
-            result[i] = (char)(((int)char_ + s - 97) % 26 + 97);
+    for (i = 0; i < length; i++) {
+        if (isalpha(str[i])) {
+            if (isupper(str[i])) {
+                result[i] = 'A' + (str[i] - 'A' + offset) % 26;
+            } else {
+                result[i] = 'a' + (str[i] - 'a' + offset) % 26;
+            }
         } else {
-            result[i] = char_;
+            result[i] = str[i];
         }
     }
-    result[i] = '\0';
-    return result;
+    result[length] = '\0'; 
 }
 
-char* decrypt(char text[], int s) {
-    static char result[100];
-    int i;
-    
-    for (i = 0; i < strlen(text); i++) {
-        char char_ = text[i];
-        
-        if (char_ >= 'A' && char_ <= 'Z') {
-            result[i] = (char)(((int)char_ - s - 65 + 26) % 26 + 65);
-        } else if (char_ >= 'a' && char_ <= 'z') {
-            result[i] = (char)(((int)char_ - s - 97 + 26) % 26 + 97);
-        } else {
-            result[i] = char_;
-        }
-    }
-    result[i] = '\0';
-    return result;
+void decode(char *str, int offset, char *result) {
+
+    encode(str, 26 - (offset % 26), result);
 }
 
 int main() {
-    char text[100];
-    int s;
-    scanf("%s",text);
-    scanf("%d",&s);
-    printf("Text: %s\n", text);
-    printf("Shift: %d\n", s);
-    printf("Cipher: %s\n", encrypt(text, s));
-    printf("Decrypted: %s\n", decrypt(encrypt(text, s), s));
+    char msg[] = "Hello welcome to Security Laboratory";
+    char encoded[256];
+    char decoded[256];
+    
+    printf("Simulation of Caesar Cipher\n");
+    printf("Input message: %s\n", msg);
+    
+    encode(msg, 12, encoded);
+    printf("Encoded message: %s\n", encoded);
+    
+    decode(encoded, 12, decoded);
+    printf("Decoded message: %s\n", decoded);
     
     return 0;
 }
-
 ```
 
 ## OUTPUT:
 
-<img width="922" height="567" alt="Screenshot 2025-09-01 231634" src="https://github.com/user-attachments/assets/4787a528-2e80-4fb4-a76b-2ce6e2322224" />
-
+![CRYPTO EX1](https://github.com/user-attachments/assets/8746f017-8ad5-43d1-874b-82fec97d3361)
 
 ## RESULT :
  Thus the implementation of ceasar cipher had been executed successfully.
